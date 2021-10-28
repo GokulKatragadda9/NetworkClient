@@ -33,8 +33,8 @@ public class NetworkClientImpl: NetworkClient {
             do {
                 let result: T = try self.decode(from: data)
                 return completion(.success(result))
-            } catch {
-                return completion(.failure(.decodingError))
+            } catch let error {
+                return completion(.failure(.error(error: error)))
             }
         }.resume()
     }
