@@ -9,6 +9,8 @@ public protocol NetworkClient {
 public class NetworkClientImpl: NetworkClient {
     private let urlSession = URLSession.shared
     
+    public init() {}
+    
     public func dataTask<T>(with url: URL, _ completion: @escaping (Result<T, NetworkClientError>) -> Void) where T : Decodable, T : Encodable {
         let request = URLRequest(url: url)
         dataTask(with: request, completion)
