@@ -1,8 +1,6 @@
 import Foundation
 
 public protocol NetworkClient {
-    func dataTask(with url: URL, _ completion: @escaping (Result<Data, NetworkClientError>) -> Void)
-    func dataTask(with request: URLRequest, _ completion: @escaping (Result<Data, NetworkClientError>) -> Void)
     func dataTask<T: Codable>(with url: URL, _ completion: @escaping (Result<T, NetworkClientError>) -> Void)
     func dataTask<T: Codable>(with request: URLRequest, _ completion: @escaping (Result<T, NetworkClientError>) -> Void)
 }
@@ -11,15 +9,6 @@ public class NetworkClientImpl: NetworkClient {
     private let urlSession = URLSession.shared
     
     public init() {}
-    
-    public func dataTask(with url: URL, _ completion: @escaping (Result<Data, NetworkClientError>) -> Void) {
-        let request = URLRequest(url: url)
-        dataTask(with: request, completion)
-    }
-    
-    public func dataTask(with request: URLRequest, _ completion: @escaping (Result<Data, NetworkClientError>) -> Void) {
-        dataTask(with: request, completion)
-    }
     
     public func dataTask<T>(with url: URL, _ completion: @escaping (Result<T, NetworkClientError>) -> Void) where T : Decodable, T : Encodable {
         let request = URLRequest(url: url)
