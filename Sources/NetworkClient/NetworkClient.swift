@@ -1,7 +1,9 @@
 import Foundation
 
 public protocol NetworkClient {
+    @discardableResult
     func dataTask<T: Codable>(with url: URL, _ completion: @escaping (Result<T, NetworkClientError>) -> Void) -> URLSessionDataTask
+    @discardableResult
     func dataTask<T: Codable>(with request: URLRequest, _ completion: @escaping (Result<T, NetworkClientError>) -> Void) -> URLSessionDataTask
 }
 
