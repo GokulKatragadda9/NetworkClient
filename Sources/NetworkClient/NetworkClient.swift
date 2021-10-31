@@ -1,8 +1,8 @@
 import Foundation
 
 public protocol NetworkClient {
-    func dataTask<T: Codable>(with url: URL, _ completion: @escaping (Result<T, NetworkClientError>) -> Void)
-    func dataTask<T: Codable>(with request: URLRequest, _ completion: @escaping (Result<T, NetworkClientError>) -> Void)
+    func dataTask<T: Codable>(with url: URL, _ completion: @escaping (Result<T, NetworkClientError>) -> Void) -> URLSessionDataTask
+    func dataTask<T: Codable>(with request: URLRequest, _ completion: @escaping (Result<T, NetworkClientError>) -> Void) -> URLSessionDataTask
 }
 
 public class NetworkClientImpl: NetworkClient {
@@ -10,13 +10,13 @@ public class NetworkClientImpl: NetworkClient {
     
     public init() {}
     
-    public func dataTask<T>(with url: URL, _ completion: @escaping (Result<T, NetworkClientError>) -> Void) where T : Decodable, T : Encodable {
+    public func dataTask<T>(with url: URL, _ completion: @escaping (Result<T, NetworkClientError>) -> Void) -> URLSessionDataTask where T : Decodable, T : Encodable {
         let request = URLRequest(url: url)
-        dataTask(with: request, completion)
+        return dataTask(with: request, completion)
     }
     
-    public func dataTask<T>(with request: URLRequest, _ completion: @escaping (Result<T, NetworkClientError>) -> Void) where T : Decodable, T : Encodable {
-        urlSession.dataTask(with: request) { [weak self] data, response, error in
+    public func dataTask<T>(with request: URLRequest, _ completion: @escaping (Result<T, NetworkClientError>) -> Void) -> URLSessionDataTask where T : Decodable, T : Encodable {
+        let dataTask = urlSession.dataTask(with: request) { [weak self] data, response, error in
             guard let self = self else {
                 return completion(.failure(.nilSelf))
             }
@@ -39,7 +39,9 @@ public class NetworkClientImpl: NetworkClient {
             } catch let error {
                 return completion(.failure(.error(error: error)))
             }
-        }.resume()
+        }
+        dataTask.resume()
+        return dataTask
     }
     
     private func decode<T: Decodable>(from data: Data) throws -> T {
