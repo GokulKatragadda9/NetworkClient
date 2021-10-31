@@ -10,11 +10,13 @@ public class NetworkClientImpl: NetworkClient {
     
     public init() {}
     
+    @discardableResult
     public func dataTask<T>(with url: URL, _ completion: @escaping (Result<T, NetworkClientError>) -> Void) -> URLSessionDataTask where T : Decodable, T : Encodable {
         let request = URLRequest(url: url)
         return dataTask(with: request, completion)
     }
     
+    @discardableResult
     public func dataTask<T>(with request: URLRequest, _ completion: @escaping (Result<T, NetworkClientError>) -> Void) -> URLSessionDataTask where T : Decodable, T : Encodable {
         let dataTask = urlSession.dataTask(with: request) { [weak self] data, response, error in
             guard let self = self else {
